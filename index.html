@@ -865,10 +865,8 @@ CORTO. 3 líneas máximo. Que cierre con energía.`
     inputEl.disabled = true;
     sendBtn.disabled = true;
     updateProgress();
-    // Redirige a thank you page inmediatamente
-    setTimeout(() => {
-      window.location.href = 'https://graciastoeflhackers.carrd.co/';
-    }, 800);
+    // Abre thank you page en nueva pestaña inmediatamente
+    window.open('https://graciastoeflhackers.carrd.co/', '_blank');
     return;
   }
 
