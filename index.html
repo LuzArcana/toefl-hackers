@@ -480,10 +480,6 @@
 
   <div class="done-banner" id="doneBanner">
     Ricardo ya recibió tu diagnóstico. Te escribirá pronto por WhatsApp. 🎯
-    <br><br>
-    <button onclick="location.reload()" style="background:var(--navy);color:#fff;border:none;border-radius:8px;padding:8px 20px;font-family:'Inter',sans-serif;font-size:13px;cursor:pointer;margin-top:4px;">
-      Hacer otro diagnóstico
-    </button>
   </div>
 
   <div class="input-area">
@@ -865,6 +861,10 @@ CORTO. 3 líneas máximo. Que cierre con energía.`
     inputEl.disabled = true;
     sendBtn.disabled = true;
     updateProgress();
+    // Redirige a thank you page después de 4 segundos
+    setTimeout(() => {
+      window.location.href = 'https://graciastoeflhackers.carrd.co/';
+    }, 4000);
     return;
   }
 
