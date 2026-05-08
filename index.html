@@ -479,6 +479,7 @@
 // CONFIG
 // ══════════════════════════════════════════
 const API_KEY     = '';
+const API_URL     = '/api/chat';
 const WEBHOOK_URL = 'TU_WEBHOOK_DE_MAKE';
 
 // ══════════════════════════════════════════
@@ -678,13 +679,10 @@ function addChoices(choices, onSelect) {
 // CLAUDE — llama API con prompt específico
 // ══════════════════════════════════════════
 async function callClaude(prompt) {
-  const res = await fetch('https://api.anthropic.com/v1/messages', {
+  const res = await fetch(API_URL, {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': API_KEY,
-      'anthropic-version': '2023-06-01',
-      'anthropic-dangerous-direct-browser-access': 'true'
+      'Content-Type': 'application/json'
     },
     body: JSON.stringify({
       model: 'claude-haiku-4-5-20251001',
