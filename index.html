@@ -617,14 +617,20 @@ const STEPS = [
   },
 
   {
+    id: 'pais', type: 'choice', field: 'pais',
+    msg: '¿De qué país es tu número de WhatsApp?',
+    choices: ['🇲🇽 México (+52)', '🇺🇸 USA (+1)', '🌎 Otro país']
+  },
+
+  {
     id: 'whatsapp', type: 'open', field: 'whatsapp',
-    msg: '¿A qué número de WhatsApp te mandamos tu diagnóstico?\n\nEscríbelo con lada 👇'
+    msg: '¿Cuáles son los 10 dígitos de tu WhatsApp? (sin código de país, solo los 10 números) 👇'
   },
 
   // 20 — Confirmación WhatsApp
   {
     id: 'whatsappConfirm', type: 'open', field: 'whatsappConfirm',
-    msg: 'Confírmame el número una vez más para asegurarnos de escribirte al correcto.'
+    msg: 'Confírmame los 10 dígitos una vez más para asegurarnos de escribirte al correcto.'
   },
 
   // 21 — Email
@@ -901,6 +907,23 @@ function submitOpen(text) {
   const s = STEPS[stepIdx];
   if (!s || s.type !== 'open') return;
 
+  // Validar que whatsapp tenga exactamente 10 dígitos
+  if (s.field === 'whatsapp') {
+    const digits = text.replace(/\D/g, '');
+    if (digits.length !== 10) {
+      addBubble('user', text);
+      setTimeout(() => {
+        addBubble('ai', 'Necesito exactamente 10 dígitos 🤔 Sin código de país, solo los 10 números. Inténtalo de nuevo:');
+        inputEl.value = '';
+        inputEl.style.height = 'auto';
+        inputEl.disabled = false;
+        sendBtn.disabled = false;
+        inputEl.focus();
+      }, 350);
+      return;
+    }
+  }
+
   // Validar confirmación de teléfono
   if (s.field === 'whatsappConfirm') {
     const n1 = (formData.whatsapp || '').replace(/\D/g, '');
@@ -911,16 +934,21 @@ function submitOpen(text) {
       formData.whatsappConfirm = '';
       inputEl.value = '';
       inputEl.style.height = 'auto';
-      // Regresa al paso whatsapp (stepIdx - 1 porque aún no avanzamos)
       stepIdx -= 1;
       setTimeout(() => {
-        addBubble('ai', 'Los números no coinciden 🤔 Escríbeme tu WhatsApp de nuevo (con lada):');
+        addBubble('ai', 'Los números no coinciden 🤔 Escríbeme los 10 dígitos de nuevo:');
         inputEl.disabled = false;
         sendBtn.disabled = false;
         inputEl.focus();
       }, 350);
       return;
     }
+    // Si coinciden, armar número completo con código de país
+    const pais = formData.pais || '';
+    let codigo = '+52'; // default México
+    if (pais.includes('+1')) codigo = '+1';
+    else if (pais.includes('Otro')) codigo = '';
+    formData.whatsappCompleto = codigo + n2;
   }
 
   addBubble('user', text);
@@ -952,8 +980,9 @@ async function sendToWebhook() {
   const score = getScore();
   const payload = {
     nombre:              formData.nombre || '',
-    whatsapp:            (formData.whatsapp || '').replace(/\D/g, ''),
+    whatsapp:            formData.whatsappCompleto || (formData.whatsapp || '').replace(/\D/g, ''),
     whatsapp_confirmado: (formData.whatsappConfirm || '').replace(/\D/g, ''),
+    pais:                formData.pais || '',
     email:               formData.email || '',
     urgencia:            formData.urgencia || '',
     autoPercepcion:      formData.autoPercepcion || '',
