@@ -19,7 +19,31 @@
     --radius:  16px;
   }
 
-  /* ── LANDING SCREEN ── */
+  html, body {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background: var(--navy);
+    font-family: 'Inter', sans-serif;
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .chat-wrapper {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    width: 100%;
+    height: 100%;
+    flex-direction: column;
+    background: var(--bg);
+  }
+
+  .chat-wrapper.visible {
+    display: flex;
+  }
   .landing {
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
@@ -977,9 +1001,8 @@ window.addEventListener('load', () => {
   sendBtn.disabled = true;
 
   document.getElementById('startBtn').addEventListener('click', () => {
-    document.getElementById('landing').style.display = 'none';
-    const chat = document.getElementById('chatWrapper');
-    chat.style.display = 'flex';
+    document.getElementById('landing').classList.add('hidden');
+    document.getElementById('chatWrapper').classList.add('visible');
     setTimeout(runStep, 600);
   });
 });
