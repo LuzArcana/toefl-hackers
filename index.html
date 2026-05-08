@@ -909,13 +909,15 @@ function submitOpen(text) {
       addBubble('user', text);
       formData.whatsapp = '';
       formData.whatsappConfirm = '';
-      stepIdx -= 2;
       inputEl.value = '';
       inputEl.style.height = 'auto';
+      // Regresa al paso whatsapp (stepIdx - 1 porque aún no avanzamos)
+      stepIdx -= 1;
       setTimeout(() => {
-        addBubble('ai', 'Los números no coinciden 🤔 Vamos de nuevo — ¿cuál es tu WhatsApp? (con lada)');
+        addBubble('ai', 'Los números no coinciden 🤔 Escríbeme tu WhatsApp de nuevo (con lada):');
         inputEl.disabled = false;
         sendBtn.disabled = false;
+        inputEl.focus();
       }, 350);
       return;
     }
